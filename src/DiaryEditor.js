@@ -1,19 +1,18 @@
-import { useState } from "react";
-// DiaryEditor 컴포넌트가 input에 작성된 값을 직접 핸들링 할 수 있도록 만든다
+import React, { useRef, useState } from "react";
 
 const DiaryEditor = () => {
-  // 작성자의 초기값은 입력을 안한 상태 이므로 공백("") 넣어줌
+  // useRef 함수를 호출해 반환값을 authorInput에 담아줌
+  // authorInput은 MutableRefObject인데 html dom 요소에 접근할 수 있는 기능을 함
+  const authorInput = useRef();
+  const contentInput = useRef();
 
   const [state, setState] = useState({
     author: "",
     content: "",
-    // select로 선택한 값을 실시간으로 DiaryEditior 컴포넌트가 핸들링 히기 위해서 emotion이라는 프로퍼티 생성
     emotion: 1,
   });
 
-  //이벤트 객체를 받는다는것 = input의 onChange, textarea의 onChange에도 전달
   const handleChangeState = (e) => {
-    // author:변경된 내용, content:변경된 내용
     setState({
       ...state,
       [e.target.name]: e.target.value,
@@ -21,34 +20,40 @@ const DiaryEditor = () => {
   };
 
   const handleSubmit = () => {
-    console.log(state);
+    if (state.author.length < 1) {
+      // focus
+      authorInput.current.focus();
+      return;
+    }
+
+    if (state.content.length < 5) {
+      // focus
+      contentInput.current.focus();
+      return;
+    }
     alert("저장 성공");
   };
 
-  // css에 클래스 가지고 스타일링을 할때 클래스 이름과 컴포넌트 이름 일치시키면 직관적으로 코드 작성 가능
   return (
     <div className="DiaryEditor">
       <h2>오늘의 일기</h2>
       <div>
         <input
-          //event가 발생한 target element에 이름까지 출력 가능
+          // authorInput이라는 객체를 통해서input 태그에 접근 가능
+          // userRef로 생성한 authorInput같은 레퍼런스 객체는 현재 가르키는 값을 current라는 프로퍼티로 불러와 사용할 수 있음
+          // authorInput.current는 authorInput 태그가 되는거고 focus라는 기능을 사용해 focus 되도록 만든것
+          ref={authorInput}
           name="author"
           value={state.author}
-          // onChange : 값이 바뀌었을때 수행 하는 이벤트 => onChange 이벤트를 input에 등록하면 input이 변화할때마다 callback 함수를 작동
-          // input에 값이 바뀌었을때 onChange라는 prop에 전달한 callback함수를 수행
           onChange={handleChangeState}
-          // 상태를 값이 변화할때마다 그 값으로 업데이트
-
-          // 알아서 spread가 펼쳐주기 때문에 원래의 값을 객체에 할당하는게 가능
         />
       </div>
       <div>
         <textarea
+          ref={contentInput}
           name="content"
           value={state.content}
           onChange={handleChangeState}
-
-          // 알아서 spread가 펼쳐주기 때문에 원래의 값을 객체에 할당하는게 가능
         />
       </div>
       <div>
