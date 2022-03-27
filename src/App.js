@@ -8,7 +8,6 @@ function App() {
 
   const dataId = useRef(0);
 
-  // author,content,emotion을 onCreate 함수가 받아서 data를 업데이트시키는 logic을 setData를 이용해 onCreate 함수안에 작성
   const onCreate = (author, content, emotion) => {
     const created_date = new Date().getTime();
     const newItem = {
@@ -23,10 +22,18 @@ function App() {
     setData([newItem, ...data]);
   };
 
+  // 어느 Id를 갖고 있는 요소를 지우길 원하나 매개변수로 전달
+  const onRemove = (targetId) => {
+    console.log(`${targetId}가 삭제되었습니다`);
+    const newDiaryList = data.filter((it) => it.id !== targetId);
+    setData(newDiaryList);
+  };
+
+  // DiaryItem의 부모인 DiaryList 컴포넌트에 props로 onDelete 함수를 내려준다
   return (
     <div className="App">
       <DiaryEditor onCreate={onCreate} />
-      <DiaryList diaryList={data} />
+      <DiaryList onRemove={onRemove} diaryList={data} />
     </div>
   );
 }

@@ -30,7 +30,6 @@ const DiaryEditor = ({ onCreate }) => {
 
     onCreate(state.author, state.content, state.emotion);
     alert("저장 성공");
-    // 저장에 성공하면 값을 초기화 시키는 것
     setState({
       author: "",
       content: "",
