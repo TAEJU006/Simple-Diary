@@ -9,14 +9,11 @@ const DiaryItem = ({
   emotion,
   created_date,
 }) => {
-  // true와 false 값을 갖게 되는데 현재 수정중인지 아닌지 boolean 상태로 값을 보관
   const [isEdit, setIsEdit] = useState(false);
-  // toggleIsEdit이 호출되는 순간 원래 가지고 있던 값을 반전 시킨다
   const toggleIsEdit = () => setIsEdit(!isEdit);
 
-  // localContent의 원래 값을 content로 변경해주면 기존 내용을 수정 가능
   const [localContent, setLocalContent] = useState(content);
-  // 조건을 만족 하지 않으면 진하게 테두리가 보여서 수정이 안되게 하는 HTML DOM에 접근할 Ref 만들어줌
+
   const localContentInput = useRef();
 
   const handleRemove = () => {
@@ -24,13 +21,12 @@ const DiaryItem = ({
       onRemove(id);
     }
   };
-  // 수정 취소를 누르고 다시 원래 글로 돌아간 후 다시 수정 취소를 누르면 입력된 값이 나오는데 false로 줘서 원래의 값이 나오게 함
+
   const handleQuitEdit = () => {
     setIsEdit(false);
     setLocalContent(content);
   };
 
-  // 수정 완료가 되면 처리할 함수
   const handleEdit = () => {
     if (localContent.length < 5) {
       localContentInput.current.focus();
@@ -63,7 +59,6 @@ const DiaryItem = ({
           </>
         ) : (
           <>{content}</>
-          // isEdit 함수가 true이기 때문에 textarea가 나옴
         )}
       </div>
 

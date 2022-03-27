@@ -8,7 +8,6 @@ const DiaryList = ({ onEdit, onRemove, diaryList }) => {
       <h4>{diaryList.length}개의 일기가 있습니다.</h4>
       <div>
         {diaryList.map((it) => (
-          // DiaryItem에게 onEdit을 내려줌
           <DiaryItem
             key={`diaryitem_${it.id}`}
             {...it}
