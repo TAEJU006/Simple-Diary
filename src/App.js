@@ -17,23 +17,32 @@ function App() {
       created_date,
       id: dataId.current,
     };
-    // 다음 일기 Item은 숫자 증가
     dataId.current += 1;
     setData([newItem, ...data]);
   };
 
-  // 어느 Id를 갖고 있는 요소를 지우길 원하나 매개변수로 전달
   const onRemove = (targetId) => {
     console.log(`${targetId}가 삭제되었습니다`);
     const newDiaryList = data.filter((it) => it.id !== targetId);
     setData(newDiaryList);
   };
 
-  // DiaryItem의 부모인 DiaryList 컴포넌트에 props로 onDelete 함수를 내려준다
+  // 어떤 id를 가진 글을 수정할건지, 어떻게 변경 할건지 두개의 매개변수를 받아준다
+  // 각각 모든 요소들이 현재 매개변수로 전달받은 targetId와 일치하는 Id를 갖는지 검사
+  // 원본 데이터를 다 불러준다음 새로운 컨텐츠로 업데이트
+  const onEdit = (targetId, newContent) => {
+    setData(
+      data.map((it) =>
+        it.id === targetId ? { ...it, content: newContent } : it
+      )
+    );
+  };
+
+  // DiaryItem의 부모 컨포넌트인 DiaryList에 전달
   return (
     <div className="App">
       <DiaryEditor onCreate={onCreate} />
-      <DiaryList onRemove={onRemove} diaryList={data} />
+      <DiaryList onEdit={onEdit} onRemove={onRemove} diaryList={data} />
     </div>
   );
 }
