@@ -1,6 +1,11 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
+// oncreate 함수가 재생성 되지 않아야만 DiaryEditor 컴포넌트를 React.memo와 함께 최적화 할 수 있다
 const DiaryEditor = ({ onCreate }) => {
+  useEffect(() => {
+    console.log("DiaryEditor 렌더");
+  });
+
   const authorInput = useRef();
   const contentInput = useRef();
 
@@ -75,4 +80,5 @@ const DiaryEditor = ({ onCreate }) => {
     </div>
   );
 };
-export default DiaryEditor;
+// react.memo로 묶인 editor을 밖으로 내보내겠다
+export default React.memo(DiaryEditor);

@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import "./App.css";
 import DiaryEditor from "./DiaryEditor";
 import DiaryList from "./DiaryList";
@@ -30,7 +30,9 @@ function App() {
     getData();
   }, []);
 
-  const onCreate = (author, content, emotion) => {
+  // 첫번째 인자로 전달한 callback 함수가 작성완료가 되었을때 추가하는 함수가 되고
+  // 두번째 인자로 전달한 []는 빈배열로 전달하는데 mount되는 시점에 한번만 만들고 다음부터는 첫번째 만들었던 함수를 재사용 할 수 있도록 작성
+  const onCreate = useCallback((author, content, emotion) => {
     const created_date = new Date().getTime();
     const newItem = {
       author,
@@ -40,8 +42,10 @@ function App() {
       id: dataId.current,
     };
     dataId.current += 1;
-    setData([newItem, ...data]);
-  };
+    // 상태변화 함수인 setState 함수에 함수를 전달하는 것 => 함수형 업데이트
+    // []를 비워도 항상 최신의 state를 인자를 참고 할 수 있게 되면서 []을 비울수 있도록 도움을 줌
+    setData((data) => [newItem, ...data]);
+  }, []);
 
   const onRemove = (targetId) => {
     const newDiaryList = data.filter((it) => it.id !== targetId);
