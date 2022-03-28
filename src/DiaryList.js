@@ -1,6 +1,5 @@
 import DiaryItem from "./DiaryItem";
 
-// onEdit props로 전달 받음
 const DiaryList = ({ onEdit, onRemove, diaryList }) => {
   return (
     <div className="DiaryList">

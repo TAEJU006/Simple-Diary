@@ -1,31 +1,22 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import "./App.css";
 import DiaryEditor from "./DiaryEditor";
 import DiaryList from "./DiaryList";
-
-// https://jsonplaceholder.typicode.com/comments
 
 function App() {
   const [data, setData] = useState([]);
 
   const dataId = useRef(0);
 
-  // async 함수를 붙여서 getData 함수가 promise를 반환하는 비동기 함수로 만들어 줌
-  // then을 이용해 우리가 원하는 json 값들만 뽑아와 줌
   const getData = async () => {
     const res = await fetch(
       "https://jsonplaceholder.typicode.com/comments"
     ).then((res) => res.json());
 
-    // 응답값 배열 res(객체가 들어있는 배열)에서  0~19까지 slice
-    // map함수를 사용하면 배열의 각각 모든 요소를 순회 하여 map함수의 callback함수 안에서 return 하는 값들을 모아서 배열을 만들어서 initData값에 집어 넣는다
     const initData = res.slice(0, 20).map((it) => {
       return {
         author: it.email,
         content: it.body,
-        // math.random 0~4까지의 random 숫자를 산출
-        // math.floor은 소수점 자리수를 정수로 바꿔주는 함수 => math.random함수는 소수점까지 산출되기 때문에
-        // +1을 하면 1부터 5까지 산출 가능
         emotion: Math.floor(Math.random() * 5) + 1,
         created_date: new Date().getTime(),
         id: dataId.current++,
@@ -35,7 +26,6 @@ function App() {
     setData(initData);
   };
 
-  // mount
   useEffect(() => {
     getData();
   }, []);
@@ -67,9 +57,28 @@ function App() {
     );
   };
 
+  // useMemo 함수는 첫번째 인자로 callback 함수를 받아서 callback 함수가 리턴하는 = 연산 을 최적화 할 수 있도록 도와주는 기능
+  // useMemo 함수는 두번째로 배열을 전달해야 하는데 useEffect의 dependenct array랑 똑같은 배열
+  // []에 data.length 가 변화할때만 useMemo의 첫번째 인자로 전달한 callback 함수가 다시 수행
+  // useMemo 함수로 최적화를 하면 getDiaryAnalysis는 더이상 함수가 아니고 데이터를 리턴 받는다 => useMemo 함수는 callback 함수가 리턴하는 값을 그냥 리턴하기 때문에
+  const getDiaryAnalysis = useMemo(() => {
+    console.log("일기분석시작");
+
+    const goodCount = data.filter((it) => it.emotion >= 3).length;
+    const badCount = data.length - goodCount;
+    const goodRatio = (goodCount / data.length) * 100;
+    return { goodCount, badCount, goodRatio };
+  }, [data.length]);
+
+  const { goodCount, badCount, goodRatio } = getDiaryAnalysis;
+
   return (
     <div className="App">
       <DiaryEditor onCreate={onCreate} />
+      <div>전체일기 : {data.length}</div>
+      <div>기분 좋은 일기 갯수 : {goodCount}</div>
+      <div>기분 나쁜 일기 갯수 : {badCount}</div>
+      <div>기분 좋은 일기 비율 : {goodRatio}</div>
       <DiaryList onEdit={onEdit} onRemove={onRemove} diaryList={data} />
     </div>
   );
