@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 const DiaryItem = ({
   onRemove,
@@ -9,6 +9,11 @@ const DiaryItem = ({
   emotion,
   created_date,
 }) => {
+  // useEffect를 이용해 어떤 아이템들이 rerendering되고 있는지 확인
+  useEffect(() => {
+    console.log(`${id}번째 아이템 렌더`);
+  });
+
   const [isEdit, setIsEdit] = useState(false);
   const toggleIsEdit = () => setIsEdit(!isEdit);
 
@@ -77,4 +82,4 @@ const DiaryItem = ({
   );
 };
 
-export default DiaryItem;
+export default React.memo(DiaryItem);
